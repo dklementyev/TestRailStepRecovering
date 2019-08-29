@@ -1,0 +1,177 @@
+{
+	"info": {
+		"_postman_id": "a063ea8b-4b8f-48cb-8c72-e25ea0bf60f5",
+		"name": "Test Rail API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetPage",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ee44b22a-6187-4dcf-a770-e0b6b1834ebd",
+						"exec": [
+							"var cheerio = require('cheerio');",
+							"var base_url = pm.variables.get(\"baseUrl\"); ",
+							"var caseId = pm.variables.get(\"caseId\");",
+							"",
+							"function unescapeHTML(escapedHTML) {",
+							"  return escapedHTML",
+							"      .replace(/&lt;/g,'<')",
+							"      .replace(/&gt;/g,'>')",
+							"      .replace(/&amp;/g,'&')",
+							"      .replace(/\\\\t/g,\"\")",
+							"      .replace(/<br>/g,'\\n')",
+							"      .replace(/&apos;/g,\"'\")",
+							"      .replace(/&#x2F;/g,\"/\")",
+							"      .replace(/&quot;/g,'\"');",
+							"}",
+							"pm.sendRequest(",
+							"    {",
+							"        url: base_url + '/cases/history/' + caseId,",
+							"        method: 'GET',",
+							"        header : {",
+							"        },",
+							"        body: {",
+							"            mode: 'none'",
+							"        }",
+							"}",
+							", function(err,res)",
+							"{",
+							"        pm.expect(res).to.have.property('code', 200);",
+							"        ",
+							"        var body = res.text();",
+							"        var $ = cheerio(body);",
+							"        ",
+							"        var list = [];",
+							"",
+							"        $.find(\"th:contains('Steps')\").first().parent().find(\"ol\").first().find(\"li > div > p\").each(",
+							"            function(i, elem) {",
+							"                list[i] = unescapeHTML($.find(elem).html());",
+							"            });",
+							"            ",
+							"        if (list.length === 0)",
+							"        {",
+							"            console.log(\"Case with id \" + caseId + \" doesn't contain any step definitions in History.\");",
+							"        }",
+							"       ",
+							"    var jsonObject = {",
+							"        custom_steps_separated: []",
+							"    }",
+							"    ",
+							"    ",
+							"    list.forEach(",
+							"        function(el,index) {",
+							"        var jsonStepObject = {",
+							"            content: el,",
+							"            expected: \"\"",
+							"        }",
+							"",
+							"        jsonObject.custom_steps_separated[index] = jsonStepObject;",
+							"    });",
+							"    ",
+							"    pm.environment.set('req_body', JSON.stringify(jsonObject));",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Cookie",
+						"value": "<coockie here>",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{req_body}}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v2/update_case/:caseId",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"update_case",
+						":caseId"
+					],
+					"variable": [
+						{
+							"key": "caseId",
+							"value": "{{caseId}}"
+						}
+					]
+				},
+				"description": "\t"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "<testRails_password>",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "<testRails_userName>",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "fc13dc29-bd41-4a76-9bb4-f98a929b80d9",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "93fe4397-32c1-4700-80f5-9ea7c125d18f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "220d7306-755b-4429-a9fc-2213220467d9",
+			"key": "baseUrl",
+			"value": "<url_to_testRails_indexPhp>",
+			"type": "string"
+		},
+		{
+			"id": "10100826-0c00-43fd-b8fc-5ea68dabf980",
+			"key": "caseId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

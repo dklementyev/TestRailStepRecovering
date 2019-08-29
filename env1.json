@@ -1,0 +1,19 @@
+{
+	"id": "dbc46201-73b4-4e1f-8d50-a2d20269cd07",
+	"name": "trEnv",
+	"values": [
+		{
+			"key": "req_body",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "baseUrl",
+			"value": "<path_to_testRails_indexPhp>",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2019-08-28T15:47:50.752Z",
+	"_postman_exported_using": "Postman/7.5.0"
+}
